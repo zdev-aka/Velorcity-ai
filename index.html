@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Velorcity // AI</title>
+    <!-- Custom SVG Favicon: UFO with Alien Head (Copyright Free implementation) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3C!-- Saucer Body --%3E%3Cpath d='M5 60 Q 50 90 95 60 Q 50 40 5 60 Z' fill='%23000000'/%3E%3C!-- Dome --%3E%3Cpath d='M25 60 Q 50 10 75 60' fill='%23000000'/%3E%3C!-- Alien Head Silhouette (Negative Space) --%3E%3Cpath d='M35 60 Q 50 25 65 60' fill='%23ffffff'/%3E%3C!-- Alien Eyes --%3E%3Cellipse cx='43' cy='50' rx='3' ry='5' fill='%23000000' transform='rotate(-20 43 50)'/%3E%3Cellipse cx='57' cy='50' rx='3' ry='5' fill='%23000000' transform='rotate(20 57 50)'/%3E%3C!-- Saucer Lights --%3E%3Ccircle cx='20' cy='65' r='3' fill='%23ffffff'/%3E%3Ccircle cx='50' cy='72' r='4' fill='%23ffffff'/%3E%3Ccircle cx='80' cy='65' r='3' fill='%23ffffff'/%3E%3C/svg%3E" type="image/svg+xml" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              border: 'var(--border)',
+              input: 'var(--input)',
+              ring: 'var(--ring)',
+              background: 'var(--background)',
+              foreground: 'var(--foreground)',
+            },
+            boxShadow: {
+              'neo': '4px 4px 0px 0px var(--shadow-color)',
+              'neo-sm': '2px 2px 0px 0px var(--shadow-color)',
+              'neo-lg': '8px 8px 0px 0px var(--shadow-color)',
+            },
+            animation: {
+              'blink': 'blink 1s step-end infinite',
+              'glitch': 'glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite',
+            },
+            keyframes: {
+              blink: {
+                '0%, 100%': { opacity: '1' },
+                '50%': { opacity: '0' },
+              },
+              glitch: {
+                '0%': { transform: 'translate(0)' },
+                '20%': { transform: 'translate(-2px, 2px)' },
+                '40%': { transform: 'translate(-2px, -2px)' },
+                '60%': { transform: 'translate(2px, 2px)' },
+                '80%': { transform: 'translate(2px, -2px)' },
+                '100%': { transform: 'translate(0)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <style>
+      :root {
+        --background: #ffffff;
+        --foreground: #000000;
+        --muted: #f3f4f6;
+        --muted-foreground: #6b7280;
+        --border: #000000;
+        --shadow-color: #000000;
+      }
+
+      [data-theme="dark"] {
+        --background: #000000;
+        --foreground: #ffffff;
+        --muted: #1a1a1a;
+        --muted-foreground: #a3a3a3;
+        --border: #ffffff;
+        --shadow-color: #ffffff;
+      }
+
+      body {
+        font-family: 'Space Grotesk', sans-serif;
+        background-color: var(--background);
+        color: var(--foreground);
+        overflow: hidden; /* Prevent body scroll, handle in app */
+      }
+      
+      .font-mono-tech {
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* Custom Scrollbar - Brutalist */
+      ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--background);
+        border-left: 2px solid var(--border);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--muted);
+        border: 2px solid var(--border);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--foreground);
+      }
+
+      /* Markdown Styles Clean */
+      .markdown-body p {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+      }
+      .markdown-body strong {
+        font-weight: 700;
+      }
+      .markdown-body ul {
+        list-style-type: square;
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .markdown-body pre {
+        background: var(--muted);
+        border: 2px solid var(--border);
+        border-radius: 0;
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+      
+      /* LaTeX block adjustments */
+      .katex-display {
+        overflow-x: auto;
+        padding: 1rem 0;
+      }
+
+      /* Glitch Effect Classes */
+      .glitch-text {
+        position: relative;
+      }
+      .glitch-text::before,
+      .glitch-text::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--background);
+      }
+      .glitch-text::before {
+        left: 2px;
+        text-shadow: -1px 0 #ff00c1;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+      }
+      .glitch-text::after {
+        left: -2px;
+        text-shadow: -1px 0 #00fff9;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 5s infinite linear alternate-reverse;
+      }
+
+      @keyframes glitch-anim {
+        0% { clip: rect(38px, 9999px, 81px, 0); }
+        20% { clip: rect(6px, 9999px, 14px, 0); }
+        40% { clip: rect(34px, 9999px, 86px, 0); }
+        60% { clip: rect(89px, 9999px, 5px, 0); }
+        80% { clip: rect(24px, 9999px, 81px, 0); }
+        100% { clip: rect(6px, 9999px, 69px, 0); }
+      }
+      @keyframes glitch-anim2 {
+        0% { clip: rect(65px, 9999px, 91px, 0); }
+        20% { clip: rect(46px, 9999px, 94px, 0); }
+        40% { clip: rect(3px, 9999px, 98px, 0); }
+        60% { clip: rect(32px, 9999px, 60px, 0); }
+        80% { clip: rect(13px, 9999px, 5px, 0); }
+        100% { clip: rect(98px, 9999px, 95px, 0); }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/": "https://esm.sh/react@18.3.1/", 
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.344.0?external=react",
+    "framer-motion": "https://esm.sh/framer-motion@11.0.8?external=react,react-dom",
+    "react-markdown": "https://esm.sh/react-markdown@9.0.1?external=react",
+    "uuid": "https://esm.sh/uuid@9.0.1",
+    "remark-math": "https://esm.sh/remark-math@6.0.0",
+    "rehype-katex": "https://esm.sh/rehype-katex@7.0.0",
+    "react-syntax-highlighter": "https://esm.sh/react-syntax-highlighter@15.5.0?external=react",
+    "react-syntax-highlighter/": "https://esm.sh/react-syntax-highlighter@15.5.0/",
+    "zod": "https://esm.sh/zod@3.23.8",
+    "ai": "https://esm.sh/ai@3.2.0?external=react",
+    "@ai-sdk/openai": "https://esm.sh/@ai-sdk/openai@0.0.33?external=zod"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
